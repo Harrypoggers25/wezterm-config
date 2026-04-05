@@ -6,7 +6,7 @@ wezterm.on("toggle-transparency", function(window, pane)
 
 	if is_transparent then
 		window:set_config_overrides({
-			window_background_opacity = 0.8,
+			window_background_opacity = 0.85,
 			colors = {
 				background = "#000000",
 			},
@@ -22,7 +22,7 @@ wezterm.on("toggle-transparency", function(window, pane)
 end)
 
 return {
-	window_background_opacity = is_transparent and 0.8 or 1.0,
+	window_background_opacity = is_transparent and 0.85 or 1.0,
 	font = wezterm.font("Jetbrains Mono Nerd Font"),
 	font_size = 12.0,
 
