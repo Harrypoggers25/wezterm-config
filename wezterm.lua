@@ -1,7 +1,28 @@
 local wezterm = require("wezterm")
+local is_transparent = true
+
+wezterm.on("toggle-transparency", function(window, pane)
+	is_transparent = not is_transparent
+
+	if is_transparent then
+		window:set_config_overrides({
+			window_background_opacity = 0.8,
+			colors = {
+				background = "#000000",
+			},
+		})
+	else
+		window:set_config_overrides({
+			window_background_opacity = 1.0,
+			colors = {
+				background = "#1f212b",
+			},
+		})
+	end
+end)
 
 return {
-	window_background_opacity = 0.8,
+	window_background_opacity = is_transparent and 0.8 or 1.0,
 	font = wezterm.font("Jetbrains Mono Nerd Font"),
 	font_size = 12.0,
 
@@ -54,5 +75,6 @@ return {
 		{ key = "Tab", mods = "CTRL", action = wezterm.action.ActivateTabRelative(1) },
 		{ key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
 		{ key = "W", mods = "CTRL|SHIFT", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
+		{ key = "T", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("toggle-transparency") },
 	},
 }
