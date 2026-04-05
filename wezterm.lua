@@ -1,60 +1,63 @@
 local wezterm = require("wezterm")
-local is_transparent = true
 
-wezterm.on("toggle-transparency", function(window, pane)
+local is_transparent = true
+local TRANSPARENCY = 0.85
+local TABINACTIVE_TRANSPARENCY = 0.2
+local setColors = function(term_bg_hex, term_bg_rgb)
+	return {
+		background = term_bg_hex,
+		cursor_bg = "#e6c200",
+		cursor_fg = "#1c1c1c",
+		cursor_border = "#e6c200",
+		tab_bar = {
+			background = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+			active_tab = {
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+				fg_color = "#ffffff",
+			},
+			inactive_tab = {
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+				fg_color = "#888888",
+			},
+			inactive_tab_hover = {
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. TABINACTIVE_TRANSPARENCY .. ")",
+				fg_color = "#aaaaaa",
+			},
+			new_tab = {
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+				fg_color = "#00ff00",
+			},
+			new_tab_hover = {
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. TABINACTIVE_TRANSPARENCY .. ")",
+				fg_color = "#00ff00",
+			},
+		},
+	}
+end
+
+wezterm.on("toggle-transparency", function(window)
 	is_transparent = not is_transparent
 
 	if is_transparent then
 		window:set_config_overrides({
 			window_background_opacity = 0.85,
-			colors = {
-				background = "#000000",
-			},
+			colors = setColors("#000000", "0,0,0"),
 		})
 	else
 		window:set_config_overrides({
 			window_background_opacity = 1.0,
-			colors = {
-				background = "#1f212b",
-			},
+			colors = setColors("#1f212b", "31,33,43"),
 		})
 	end
 end)
 
 return {
-	window_background_opacity = is_transparent and 0.85 or 1.0,
+	window_background_opacity = is_transparent and TRANSPARENCY or 1.0,
 	font = wezterm.font("Jetbrains Mono Nerd Font"),
 	font_size = 12.0,
 
 	color_scheme = "Kanagawa Dragon (Gogh)",
-	colors = {
-		cursor_bg = "#e6c200",
-		cursor_fg = "#1c1c1c",
-		cursor_border = "#e6c200",
-		tab_bar = {
-			background = "rgba(0,0,0,0.8)",
-			active_tab = {
-				bg_color = "rgba(0,0,0,0.8)",
-				fg_color = "#ffffff",
-			},
-			inactive_tab = {
-				bg_color = "rgba(0,0,0,0.8)",
-				fg_color = "#888888",
-			},
-			inactive_tab_hover = {
-				bg_color = "rgba(0,0,0,0.2)",
-				fg_color = "#aaaaaa",
-			},
-			new_tab = {
-				bg_color = "rgba(0,0,0,0.8)",
-				fg_color = "#00ff00",
-			},
-			new_tab_hover = {
-				bg_color = "rgba(0,0,0,0.2)",
-				fg_color = "#00ff00",
-			},
-		},
-	},
+	colors = setColors("#000000", "0,0,0"),
 
 	tab_bar_at_bottom = false,
 	use_fancy_tab_bar = false,
