@@ -80,4 +80,6 @@ return {
 		{ key = "W", mods = "CTRL|SHIFT", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
 		{ key = "T", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("toggle-transparency") },
 	},
+
+	use_ime = true,
 }
