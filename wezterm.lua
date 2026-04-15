@@ -1,8 +1,8 @@
 local wezterm = require("wezterm")
 
-local is_transparent = true
-local TRANSPARENCY = 0.85
 local TABINACTIVE_TRANSPARENCY = 0.2
+local is_transparent = true
+local transparency = 0.75
 local setColors = function(term_bg_hex, term_bg_rgb)
 	return {
 		background = term_bg_hex,
@@ -10,13 +10,13 @@ local setColors = function(term_bg_hex, term_bg_rgb)
 		cursor_fg = "#1c1c1c",
 		cursor_border = "#e6c200",
 		tab_bar = {
-			background = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+			background = "rgba(" .. term_bg_rgb .. "," .. transparency .. ")",
 			active_tab = {
-				bg_color = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. transparency .. ")",
 				fg_color = "#ffffff",
 			},
 			inactive_tab = {
-				bg_color = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. transparency .. ")",
 				fg_color = "#888888",
 			},
 			inactive_tab_hover = {
@@ -24,7 +24,7 @@ local setColors = function(term_bg_hex, term_bg_rgb)
 				fg_color = "#aaaaaa",
 			},
 			new_tab = {
-				bg_color = "rgba(" .. term_bg_rgb .. "," .. TRANSPARENCY .. ")",
+				bg_color = "rgba(" .. term_bg_rgb .. "," .. transparency .. ")",
 				fg_color = "#00ff00",
 			},
 			new_tab_hover = {
@@ -40,7 +40,7 @@ wezterm.on("toggle-transparency", function(window)
 
 	if is_transparent then
 		window:set_config_overrides({
-			window_background_opacity = 0.85,
+			window_background_opacity = transparency,
 			colors = setColors("#000000", "0,0,0"),
 		})
 	else
@@ -72,7 +72,7 @@ wezterm.on("decrease-transparency", function(window)
 end)
 
 return {
-	window_background_opacity = is_transparent and TRANSPARENCY or 1.0,
+	window_background_opacity = is_transparent and transparency or 1.0,
 	font = wezterm.font("Jetbrains Mono Nerd Font"),
 	font_size = 12.0,
 
