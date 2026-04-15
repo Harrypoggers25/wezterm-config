@@ -51,6 +51,26 @@ wezterm.on("toggle-transparency", function(window)
 	end
 end)
 
+wezterm.on("increase-transparency", function(window)
+	if is_transparent and transparency - 0.05 >= 0 then
+		transparency = transparency - 0.05
+		window:set_config_overrides({
+			window_background_opacity = transparency,
+			colors = setColors("#000000", "0,0,0"),
+		})
+	end
+end)
+
+wezterm.on("decrease-transparency", function(window)
+	if is_transparent and transparency + 0.05 <= 1 then
+		transparency = transparency + 0.05
+		window:set_config_overrides({
+			window_background_opacity = transparency,
+			colors = setColors("#000000", "0,0,0"),
+		})
+	end
+end)
+
 return {
 	window_background_opacity = is_transparent and TRANSPARENCY or 1.0,
 	font = wezterm.font("Jetbrains Mono Nerd Font"),
@@ -79,6 +99,8 @@ return {
 		{ key = "Tab", mods = "CTRL|SHIFT", action = wezterm.action.ActivateTabRelative(-1) },
 		{ key = "W", mods = "CTRL|SHIFT", action = wezterm.action.CloseCurrentTab({ confirm = false }) },
 		{ key = "T", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("toggle-transparency") },
+		{ key = "R", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("increase-transparency") },
+		{ key = "L", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("decrease-transparency") },
 	},
 
 	use_ime = true,
