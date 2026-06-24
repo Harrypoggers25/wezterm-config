@@ -1,8 +1,13 @@
 local wezterm = require("wezterm")
 
 local TABINACTIVE_TRANSPARENCY = 0.2
+local BASE_BG_COLOR = "#000000"
+local BASE_TAB_BG_COLOR = "0,0,0"
+
 local is_transparent = true
 local transparency = 0.75
+local fs = 12
+
 local setColors = function(term_bg_hex, term_bg_rgb)
 	return {
 		background = term_bg_hex,
@@ -34,50 +39,81 @@ local setColors = function(term_bg_hex, term_bg_rgb)
 		},
 	}
 end
+local colors = setColors("#000000", "0,0,0")
+
+local setWindow = function(window)
+	if not is_transparent then
+		window:set_config_overrides({
+			window_background_opacity = 1.0,
+			colors = colors,
+			font_size = fs,
+		})
+	else
+		window:set_config_overrides({
+			window_background_opacity = transparency,
+			colors = colors,
+			font_size = fs,
+		})
+	end
+end
 
 wezterm.on("toggle-transparency", function(window)
 	is_transparent = not is_transparent
 
 	if is_transparent then
-		window:set_config_overrides({
-			window_background_opacity = transparency,
-			colors = setColors("#000000", "0,0,0"),
-		})
+		colors = setColors("#000000", "0,0,0")
+		setWindow(window)
 	else
-		window:set_config_overrides({
-			window_background_opacity = 1.0,
-			colors = setColors("#1f212b", "31,33,43"),
-		})
+		colors = setColors(BASE_BG_COLOR, BASE_TAB_BG_COLOR)
+		setWindow(window)
 	end
 end)
 
 wezterm.on("increase-transparency", function(window)
 	if is_transparent and transparency - 0.05 >= 0 then
 		transparency = transparency - 0.05
-		window:set_config_overrides({
-			window_background_opacity = transparency,
-			colors = setColors("#000000", "0,0,0"),
-		})
+		setWindow(window)
 	end
 end)
 
 wezterm.on("decrease-transparency", function(window)
 	if is_transparent and transparency + 0.05 <= 1 then
 		transparency = transparency + 0.05
-		window:set_config_overrides({
-			window_background_opacity = transparency,
-			colors = setColors("#000000", "0,0,0"),
-		})
+		setWindow(window)
 	end
+end)
+
+wezterm.on("increase-font", function(window)
+	fs = fs + 1
+	setWindow(window)
+end)
+
+wezterm.on("decrease-font", function(window)
+	fs = fs - 1
+	setWindow(window)
+end)
+
+wezterm.on("default-font", function(window)
+	fs = 12
+	setWindow(window)
 end)
 
 return {
 	window_background_opacity = is_transparent and transparency or 1.0,
-	font = wezterm.font("Jetbrains Mono Nerd Font"),
-	font_size = 12.0,
+	font = wezterm.font_with_fallback({
+		{
+			family = "Jetbrains Mono Nerd Font",
+			weight = "Bold",
+		},
+		{
+			family = "Noto Sans JP",
+			weight = "Bold",
+		},
+	}),
+	font_size = fs,
 
 	color_scheme = "Kanagawa Dragon (Gogh)",
-	colors = setColors("#000000", "0,0,0"),
+	colors = colors,
 
 	tab_bar_at_bottom = false,
 	use_fancy_tab_bar = false,
@@ -101,6 +137,9 @@ return {
 		{ key = "T", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("toggle-transparency") },
 		{ key = "R", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("increase-transparency") },
 		{ key = "L", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("decrease-transparency") },
+		{ key = "D", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("increase-font") },
+		{ key = "B", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("decrease-font") },
+		{ key = "F", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("default-font") },
 	},
 
 	use_ime = true,
